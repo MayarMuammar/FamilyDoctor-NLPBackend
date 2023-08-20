@@ -1,6 +1,8 @@
 from flask import Flask, request
+import os
 from flask_cors import CORS
 from sentence_transformers import SentenceTransformer, util
+
 
 app = Flask(__name__)
 cors = CORS(app, resources={r"/*": {"origins": "*"}})
@@ -12,7 +14,6 @@ def hello():
 
 @app.post('/')
 def get_similar_label():
-    print(request.get_json())
     data = request.get_json()
     answer = data['answer']
     labels = data['labels']
@@ -32,10 +33,3 @@ def find_most_similar_label(input_string, label_array, model_name='paraphrase-Mi
     sorted_labels = [label for _, label in sorted(zip(similarities, label_array), reverse=True)]
 
     return sorted_labels[0]
-
-
-if __name__ == '__main__':
-    # answer = "مرحبا بك في معالجة اللغة الطبيعية"
-    # labels = ["توليد النصوص", "استخراج المعرفة", "الترجمة الآلية", "تحليل النصوص"]
-    # print(find_most_similar_label(answer, labels))
-    app.run(port=9000, debug=True)
